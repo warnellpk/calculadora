@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -7,9 +5,10 @@
   <title>Calculadora</title>
   <link rel="stylesheet" href="css/style.css" />
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-  <link rel="icon" href="img/CalculadoraICO" type="image/png" />
+  <link rel="icon" href="img/CalculadoraICO.png" type="image/png" />
 </head>
 
+<body> 
 
 <div class="calculator-container">
   <!-- Aquí va el contenido de la calculadora -->
@@ -17,17 +16,17 @@
 
 <!-- Pantalla / área de resultado -->
     <section id="pantalla" aria-label="Pantalla de la calculadora">
-      <div id="memoria" aria-hidden="false"><!-- memoria (M) --></div>
-      <div id="resultado" role="status" aria-live="polite">0</div>
-      <div id="info"><!-- texto auxiliar --></div>
+      <div id="resultado" >0</div>
+      <div id="info"></div>
     </section>
 
     <!-- Teclado / botones agrupados por filas -->
     <section id="teclado" aria-label="Teclado de la calculadora">
 
       <div class="fila">
+        <button type="button" data-accion="percent">Hist.</button>
+                <button type="button" data-accion="percent">Cien.</button>
         <button type="button" data-accion="neg">AC</button>
-        <button type="button" data-accion="percent">Histo.</button>
         <button type="button" data-tipo="operador" data-op="/">÷</button>
       </div>
 
@@ -73,3 +72,7 @@
 
 
 </div>
+
+ </body>
+
+ </html>

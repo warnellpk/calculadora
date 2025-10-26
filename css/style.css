@@ -1,12 +1,9 @@
-/* Cambia el color dependiendo del color por defecto del navegador*/
-
 :root 
 {
 
     --color-background: #f0f0f0;
-    --color-primary: #4CAF50;
     --color-secondary: #ffffff;
-    --color-text: #333333;
+    --color-text: #000000;
     --font-family: 'Arial, sans-serif';
     --font-size-base: 16px;
     --border-radius: 5px;
@@ -19,7 +16,6 @@
 
 
     --color-background: #000000;
-    --color-primary: #4CAF50;
     --color-secondary: #1a1a1a;
     --color-text: #ffffff;
     --font-family: 'Arial, sans-serif';
@@ -30,3 +26,33 @@
 }
 
 
+
+body {
+    background-color: var(--color-background);
+    color: var(--color-text);
+    font-family: var(--font-family);
+    font-size: var(--font-size-base);
+    margin: 0;
+    padding: 0;
+}
+
+
+.calculator-container {
+    width: 320px;
+    margin: 50px auto;
+    padding: 20px;
+    border-radius: var(--border-radius);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.fila button {
+    background-color: var(--color-secondary);
+    border: none;
+    border-radius: var(--border-radius);
+    color: var(--color-text);
+    cursor: pointer;
+    font-size: 1.2em;
+    margin: 5px;
+    padding: 15px;
+    width: 60px;
+}   
