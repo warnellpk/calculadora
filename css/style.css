@@ -1,0 +1,32 @@
+/* Cambia el color dependiendo del color por defecto del navegador*/
+
+:root 
+{
+
+    --color-background: #f0f0f0;
+    --color-primary: #4CAF50;
+    --color-secondary: #ffffff;
+    --color-text: #333333;
+    --font-family: 'Arial, sans-serif';
+    --font-size-base: 16px;
+    --border-radius: 5px;
+
+}
+
+@media (prefers-color-scheme: dark) {
+
+:root {
+
+
+    --color-background: #000000;
+    --color-primary: #4CAF50;
+    --color-secondary: #1a1a1a;
+    --color-text: #ffffff;
+    --font-family: 'Arial, sans-serif';
+    --font-size-base: 16px;
+    --border-radius: 5px;
+}
+
+}
+
+
