@@ -1,0 +1,75 @@
+
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Calculadora</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <link rel="icon" href="img/CalculadoraICO" type="image/png" />
+</head>
+
+
+<div class="calculator-container">
+  <!-- Aquí va el contenido de la calculadora -->
+
+
+<!-- Pantalla / área de resultado -->
+    <section id="pantalla" aria-label="Pantalla de la calculadora">
+      <div id="memoria" aria-hidden="false"><!-- memoria (M) --></div>
+      <div id="resultado" role="status" aria-live="polite">0</div>
+      <div id="info"><!-- texto auxiliar --></div>
+    </section>
+
+    <!-- Teclado / botones agrupados por filas -->
+    <section id="teclado" aria-label="Teclado de la calculadora">
+
+      <div class="fila">
+        <button type="button" data-accion="neg">AC</button>
+        <button type="button" data-accion="percent">Histo.</button>
+        <button type="button" data-tipo="operador" data-op="/">÷</button>
+      </div>
+
+      <div class="fila">
+        <button type="button" data-num="1">1</button>
+        <button type="button" data-num="2">2</button>
+        <button type="button" data-num="3">3</button>
+        <button type="button" data-tipo="operador" data-op="+">+</button>
+      </div>
+
+
+            <div class="fila">
+        <button type="button" data-num="4">4</button>
+        <button type="button" data-num="5">5</button>
+        <button type="button" data-num="6">6</button>
+        <button type="button" data-tipo="operador" data-op="-">−</button>
+      </div>
+
+
+
+      <div class="fila">
+        <button type="button" data-num="7">7</button>
+        <button type="button" data-num="8">8</button>
+        <button type="button" data-num="9">9</button>
+        <button type="button" data-tipo="operador" data-op="*">×</button>
+      </div>
+
+
+
+      <div class="fila">
+        <button type="button" data-num=".">.</button>
+        <button type="button" data-num="0" id="cero">0</button>
+        <button type="button" data-accion="igual">=</button>
+                <button type="button" data-accion="clear">C</button>
+      </div>
+
+    </section>
+
+
+  
+
+
+
+
+</div>
