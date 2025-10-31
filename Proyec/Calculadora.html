@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Calculadora</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <link rel="icon" href="img/CalculadoraICO.png" type="image/png" />
+</head>
+
+<body>
+<div class="calculator-wrapper" style="display: flex; align-items: flex-start; gap: 15px;">
+  
+  <!-- Panel Científico (Oculto inicialmente) -->
+  <div class="scientific-panel" id="scientificPanel" style="opacity: 0; transform: translateX(-30px); transition: all 0.4s ease; visibility: hidden;">
+    <div class="calculator-container" style="width: 220px;">
+      <div class="fila">
+        <button type="button" data-sci="sqrt" style="width: 90px;">√</button>
+        <button type="button" data-sci="square" style="width: 90px;">x²</button>
+      </div>
+      <div class="fila">
+        <button type="button" data-sci="percent" style="width: 90px;">%</button>
+        <button type="button" data-sci="inverse" style="width: 90px;">1/x</button>
+      </div>
+      <div class="fila">
+        <button type="button" data-sci="factorial" style="width: 90px;">x!</button>
+        <button type="button" data-sci="power" style="width: 90px;">xʸ</button>
+      </div>
+      <div class="fila">
+        <button type="button" data-sci="log" style="width: 90px;">log</button>
+        <button type="button" data-sci="ln" style="width: 90px;">ln</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Calculadora Original -->
+  <div class="calculator-container">
+    <!-- Pantalla -->
+    <section id="pantalla">
+      <div id="resultado">0</div>
+      <div id="info"></div>
+    </section>
+
+    <!-- Teclado -->
+    <section id="teclado" aria-label="Teclado de la calculadora">
+
+      <div class="fila">
+        <button type="button" data-accion="hist">Hist.</button>
+        <button type="button" data-accion="percent" id="btnCien">Cien.</button>
+        <button type="button" data-accion="neg">AC</button>
+        <button type="button" data-tipo="operador" data-op="/">÷</button>
+      </div>
+
+      <div class="fila">
+        <button type="button" data-num="1">1</button>
+        <button type="button" data-num="2">2</button>
+        <button type="button" data-num="3">3</button>
+        <button type="button" data-tipo="operador" data-op="-">−</button>
+      </div>
+
+      <div class="fila">
+        <button type="button" data-num="4">4</button>
+        <button type="button" data-num="5">5</button>
+        <button type="button" data-num="6">6</button>
+        <button type="button" data-tipo="operador" data-op="+">+</button>
+      </div>
+
+      <div class="fila">
+        <button type="button" data-num="7">7</button>
+        <button type="button" data-num="8">8</button>
+        <button type="button" data-num="9">9</button>
+        <button type="button" data-tipo="operador" data-op="*">×</button>
+      </div>
+
+      <div class="fila">
+        <button type="button" data-num=".">.</button>
+        <button type="button" data-num="0" id="cero">0</button>
+        <button type="button" data-accion="igual">=</button>
+        <button type="button" data-accion="clear">C</button>
+      </div>
+
+    </section>
+  </div>
+</div>
+
+<script>
+const resultado = document.getElementById("resultado");
+const info = document.getElementById("info");
+const scientificPanel = document.getElementById("scientificPanel");
+const btnCien = document.getElementById("btnCien");
+
+let operando1 = "";
+let operando2 = "";
+let operacion = "";
+let escribiendoSegundo = false;
+let resultadoMostrado = false;
+let scientificMode = false;
+
+// 🔹 Recuperar historial guardado del localStorage (si existe)
+let historial = JSON.parse(localStorage.getItem("historial")) || [];
+
+function actualizarInfo() {
+  if (operacion === "") {
+    info.textContent = "";
+  } else {
+    info.textContent = operando1 + " " + operacion + " " + operando2;
+  }
+}
+
+function actualizarPantalla(valor) {
+  resultado.textContent = valor;
+}
+
+// 🔹 Guardar el historial actualizado en localStorage
+function guardarHistorial() {
+  localStorage.setItem("historial", JSON.stringify(historial));
+}
+
+// 🔹 Calcular en tiempo real
+function calcularEnTiempoReal() {
+  if (operando1 !== "" && operacion !== "" && operando2 !== "") {
+    const n1 = parseFloat(operando1);
+    const n2 = parseFloat(operando2);
+    let r = 0;
+
+    switch (operacion) {
+      case "+": r = n1 + n2; break;
+      case "-": r = n1 - n2; break;
+      case "*": r = n1 * n2; break;
+      case "/": r = n2 !== 0 ? n1 / n2 : "Error"; break;
+      case "^": r = Math.pow(n1, n2); break;
+    }
+
+    actualizarPantalla(r);
+  } else {
+    actualizarPantalla(operando1 || "0");
+  }
+}
+
+// 🔹 Funciones científicas
+function aplicarFuncionCientifica(funcion) {
+  let valor = operando1 !== "" ? parseFloat(operando1) : 0;
+  let resultado_calc = 0;
+  let error = false;
+
+  switch(funcion) {
+    case "sqrt":
+      if (valor < 0) {
+        error = true;
+        resultado_calc = "Error";
+      } else {
+        resultado_calc = Math.sqrt(valor);
+      }
+      break;
+    
+    case "square":
+      resultado_calc = Math.pow(valor, 2);
+      break;
+    
+    case "percent":
+      resultado_calc = valor / 100;
+      break;
+    
+    case "inverse":
+      if (valor === 0) {
+        error = true;
+        resultado_calc = "Error";
+      } else {
+        resultado_calc = 1 / valor;
+      }
+      break;
+    
+    case "factorial":
+      if (valor < 0 || !Number.isInteger(valor)) {
+        error = true;
+        resultado_calc = "Error";
+      } else if (valor > 170) {
+        error = true;
+        resultado_calc = "Error";
+      } else {
+        resultado_calc = 1;
+        for (let i = 2; i <= valor; i++) {
+          resultado_calc *= i;
+        }
+      }
+      break;
+    
+    case "power":
+      operacion = "^";
+      escribiendoSegundo = true;
+      actualizarInfo();
+      return;
+    
+    case "log":
+      if (valor <= 0) {
+        error = true;
+        resultado_calc = "Error";
+      } else {
+        resultado_calc = Math.log10(valor);
+      }
+      break;
+    
+    case "ln":
+      if (valor <= 0) {
+        error = true;
+        resultado_calc = "Error";
+      } else {
+        resultado_calc = Math.log(valor);
+      }
+      break;
+  }
+
+  if (!error) {
+    // Formatear el resultado si es muy largo
+    if (typeof resultado_calc === 'number') {
+      if (resultado_calc.toString().length > 10) {
+        resultado_calc = parseFloat(resultado_calc.toFixed(8));
+      }
+    }
+    
+    operando1 = resultado_calc.toString();
+    operando2 = "";
+    operacion = "";
+    escribiendoSegundo = false;
+    resultadoMostrado = true;
+    actualizarPantalla(resultado_calc);
+    actualizarInfo();
+    
+    // Agregar al historial
+    const funcionNombre = {
+      'sqrt': '√',
+      'square': 'x²',
+      'percent': '%',
+      'inverse': '1/x',
+      'factorial': 'x!',
+      'log': 'log',
+      'ln': 'ln'
+    };
+    
+    const expresion = `${funcionNombre[funcion]}(${valor}) = ${resultado_calc}`;
+    historial.push(expresion);
+    guardarHistorial();
+  } else {
+    actualizarPantalla(resultado_calc);
+    setTimeout(() => {
+      operando1 = "";
+      actualizarPantalla("0");
+      actualizarInfo();
+    }, 1500);
+  }
+}
+
+document.addEventListener("click", (e) => {
+  const btn = e.target;
+
+  // Toggle panel científico con animación
+  if (btn.dataset.accion === "percent") {
+    scientificMode = !scientificMode;
+    
+    if (scientificMode) {
+      scientificPanel.style.visibility = "visible";
+      setTimeout(() => {
+        scientificPanel.style.opacity = "1";
+        scientificPanel.style.transform = "translateX(0)";
+      }, 10);
+      
+      // Cambiar estilo del botón Cien.
+      btnCien.style.background = "linear-gradient(135deg, #667eea 0%, #764ba2 100%)";
+      btnCien.style.color = "white";
+    } else {
+      scientificPanel.style.opacity = "0";
+      scientificPanel.style.transform = "translateX(-30px)";
+      setTimeout(() => {
+        scientificPanel.style.visibility = "hidden";
+      }, 400);
+      
+      // Restaurar estilo del botón Cien.
+      btnCien.style.background = "";
+      btnCien.style.color = "";
+    }
+    return;
+  }
+
+  // Botones científicos
+  if (btn.dataset.sci !== undefined) {
+    aplicarFuncionCientifica(btn.dataset.sci);
+    return;
+  }
+
+  // Números
+  if (btn.dataset.num !== undefined) {
+    const num = btn.dataset.num;
+
+    if (resultadoMostrado && !escribiendoSegundo && operacion === "") {
+      operando1 = num;
+      resultadoMostrado = false;
+      actualizarPantalla(operando1);
+      actualizarInfo();
+      return;
+    }
+
+    if (!escribiendoSegundo) {
+      operando1 += num;
+      actualizarPantalla(operando1);
+    } else {
+      operando2 += num;
+      actualizarPantalla(operando2);
+    }
+
+    actualizarInfo();
+    calcularEnTiempoReal(); // 👈 actualización instantánea
+    resultadoMostrado = false;
+  }
+
+  // Operadores
+  if (btn.dataset.tipo === "operador") {
+    if (operando1 === "") return;
+    operacion = btn.dataset.op;
+    escribiendoSegundo = true;
+    actualizarInfo();
+    resultadoMostrado = false;
+  }
+
+  // Igual
+  if (btn.dataset.accion === "igual") {
+    if (operando1 === "" || (operando2 === "" && operacion !== "")) return;
+
+    if (operacion !== "") {
+      const n1 = parseFloat(operando1);
+      const n2 = parseFloat(operando2);
+      let r = 0;
+
+      switch (operacion) {
+        case "+": r = n1 + n2; break;
+        case "-": r = n1 - n2; break;
+        case "*": r = n1 * n2; break;
+        case "/": r = n1 / n2; break;
+        case "^": r = Math.pow(n1, n2); break;
+      }
+
+      const expresion = `${operando1} ${operacion} ${operando2} = ${r}`;
+      historial.push(expresion);
+      guardarHistorial();
+
+      actualizarPantalla(r);
+      operando1 = r.toString();
+      operando2 = "";
+      operacion = "";
+      escribiendoSegundo = false;
+      actualizarInfo();
+
+      resultadoMostrado = true;
+    }
+  }
+
+  // Mostrar historial
+  if (btn.dataset.accion === "hist") {
+    if (historial.length === 0) {
+      alert("No hay cálculos previos.");
+    } else {
+      alert("Historial:\n" + historial.join("\n"));
+    }
+  }
+
+  // Borrar (C)
+  if (btn.dataset.accion === "clear") {
+    if (!escribiendoSegundo) {
+      operando1 = operando1.slice(0, -1);
+      actualizarPantalla(operando1 || "0");
+    } else {
+      operando2 = operando2.slice(0, -1);
+      actualizarPantalla(operando2 || "0");
+    }
+    actualizarInfo();
+    calcularEnTiempoReal(); // 👈 actualizar tras borrar
+  }
+
+  // AC (reset total)
+  if (btn.dataset.accion === "neg") {
+    operando1 = "";
+    operando2 = "";
+    operacion = "";
+    escribiendoSegundo = false;
+    resultadoMostrado = false;
+    actualizarPantalla("0");
+    actualizarInfo();
+  }
+});
+</script>
+</body>
+</html>
