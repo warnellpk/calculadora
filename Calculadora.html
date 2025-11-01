@@ -9,72 +9,206 @@
 </head>
 
 <body> 
-
 <div class="calculator-container">
-  <!-- Aquí va el contenido de la calculadora -->
 
+  <!-- Pantalla -->
+  <section id="pantalla">
+    <div id="resultado">0</div>
+    <div id="info"></div>
+  </section>
 
-<!-- Pantalla / área de resultado -->
-    <section id="pantalla" >
-      <div id="resultado" >0</div>
-      <div id="info"></div>
-    </section>
+  <!-- Teclado -->
+  <section id="teclado" aria-label="Teclado de la calculadora">
 
-    <!-- Teclado / botones agrupados por filas -->
-    <section id="teclado" aria-label="Teclado de la calculadora">
+    <div class="fila">
+      <button type="button" data-accion="hist">Hist.</button>
+      <button type="button" data-accion="percent">Cien.</button>
+      <button type="button" data-accion="neg">AC</button>
+      <button type="button" data-tipo="operador" data-op="/">÷</button>
+    </div>
 
-      <div class="fila">
-        <button type="button" data-accion="percent"> <i class='bx  bx-history'  ></i>     </button>
-                <button type="button" data-accion="percent">x^2</button>
-        <button type="button" data-accion="neg">AC</button>
-                <button type="button" data-accion="clear">C</button>
-      </div>
+    <div class="fila">
+      <button type="button" data-num="1">1</button>
+      <button type="button" data-num="2">2</button>
+      <button type="button" data-num="3">3</button>
+      <button type="button" data-tipo="operador" data-op="-">−</button>
+    </div>
 
-      <div class="fila">
-        <button type="button" data-num="1">1</button>
-        <button type="button" data-num="2">2</button>
-        <button type="button" data-num="3">3</button>
-        <button type="button" data-tipo="operador" data-op="-">−</button>
-      </div>
+    <div class="fila">
+      <button type="button" data-num="4">4</button>
+      <button type="button" data-num="5">5</button>
+      <button type="button" data-num="6">6</button>
+      <button type="button" data-tipo="operador" data-op="+">+</button>
+    </div>
 
+    <div class="fila">
+      <button type="button" data-num="7">7</button>
+      <button type="button" data-num="8">8</button>
+      <button type="button" data-num="9">9</button>
+      <button type="button" data-tipo="operador" data-op="*">×</button>
+    </div>
 
-            <div class="fila">
-        <button type="button" data-num="4">4</button>
-        <button type="button" data-num="5">5</button>
-        <button type="button" data-num="6">6</button>
-        <button type="button" data-tipo="operador" data-op="+">+</button>
-      </div>
+    <div class="fila">
+      <button type="button" data-num=".">.</button>
+      <button type="button" data-num="0" id="cero">0</button>
+      <button type="button" data-accion="igual">=</button>
+      <button type="button" data-accion="clear">C</button>
+    </div>
 
-
-
-      <div class="fila">
-        <button type="button" data-num="7">7</button>
-        <button type="button" data-num="8">8</button>
-        <button type="button" data-num="9">9</button>
-        <button type="button" data-tipo="operador" data-op="*">×</button>
-      </div>
-
-
-
-      <div class="fila">
-        <button type="button" data-num=".">.</button>
-        <button type="button" data-num="0" id="cero">0</button>
-        <button type="button" data-accion="igual">=</button>
-        <button type="button" data-tipo="operador" data-op="/">÷</button>
-      </div>
-
-    </section>
-
-
-  
-
-
-
-
+  </section>
 </div>
 
- </body>
+<script>
+const resultado = document.getElementById("resultado");
+const info = document.getElementById("info");
 
- </html>
+let operando1 = "";
+let operando2 = "";
+let operacion = "";
+let escribiendoSegundo = false;
+let resultadoMostrado = false;
 
-<script src="js/calculadorajs"></script>
+// 🔹 Recuperar historial guardado del localStorage (si existe)
+let historial = JSON.parse(localStorage.getItem("historial")) || [];
+
+function actualizarInfo() {
+  if (operacion === "") {
+    info.textContent = "";
+  } else {
+    info.textContent = operando1 + " " + operacion + " " + operando2;
+  }
+}
+
+function actualizarPantalla(valor) {
+  resultado.textContent = valor;
+}
+
+// 🔹 Guardar el historial actualizado en localStorage
+function guardarHistorial() {
+  localStorage.setItem("historial", JSON.stringify(historial));
+}
+
+// 🔹 Calcular en tiempo real
+function calcularEnTiempoReal() {
+  if (operando1 !== "" && operacion !== "" && operando2 !== "") {
+    const n1 = parseFloat(operando1);
+    const n2 = parseFloat(operando2);
+    let r = 0;
+
+    switch (operacion) {
+      case "+": r = n1 + n2; break;
+      case "-": r = n1 - n2; break;
+      case "*": r = n1 * n2; break;
+      case "/": r = n2 !== 0 ? n1 / n2 : "Error"; break;
+    }
+
+    actualizarPantalla(r);
+  } else {
+    actualizarPantalla(operando1 || "0");
+  }
+}
+
+document.addEventListener("click", (e) => {
+  const btn = e.target;
+
+  // Números
+  if (btn.dataset.num !== undefined) {
+    const num = btn.dataset.num;
+
+    if (resultadoMostrado && !escribiendoSegundo && operacion === "") {
+      operando1 = num;
+      resultadoMostrado = false;
+      actualizarPantalla(operando1);
+      actualizarInfo();
+      return;
+    }
+
+    if (!escribiendoSegundo) {
+      operando1 += num;
+      actualizarPantalla(operando1);
+    } else {
+      operando2 += num;
+      actualizarPantalla(operando2);
+    }
+
+    actualizarInfo();
+    calcularEnTiempoReal(); // 👈 actualización instantánea
+    resultadoMostrado = false;
+  }
+
+  // Operadores
+  if (btn.dataset.tipo === "operador") {
+    if (operando1 === "") return;
+    operacion = btn.dataset.op;
+    escribiendoSegundo = true;
+    actualizarInfo();
+    resultadoMostrado = false;
+  }
+
+  // Igual
+  if (btn.dataset.accion === "igual") {
+    if (operando1 === "" || operando2 === "") return;
+
+    const n1 = parseFloat(operando1);
+    const n2 = parseFloat(operando2);
+    let r = 0;
+
+    switch (operacion) {
+      case "+": r = n1 + n2; break;
+      case "-": r = n1 - n2; break;
+      case "*": r = n1 * n2; break;
+      case "/": r = n1 / n2; break;
+    }
+
+    const expresion = `${operando1} ${operacion} ${operando2} = ${r}`;
+    historial.push(expresion);
+    guardarHistorial();
+
+    actualizarPantalla(r);
+    operando1 = r.toString();
+    operando2 = "";
+    operacion = "";
+    escribiendoSegundo = false;
+    actualizarInfo();
+
+    resultadoMostrado = true;
+  }
+
+  // Mostrar historial
+  if (btn.dataset.accion === "hist") {
+    if (historial.length === 0) {
+      alert("No hay cálculos previos.");
+    } else {
+      alert("Historial:\n" + historial.join("\n"));
+    }
+  }
+
+  // Borrar (C)
+  if (btn.dataset.accion === "clear") {
+    if (!escribiendoSegundo) {
+      operando1 = operando1.slice(0, -1);
+      actualizarPantalla(operando1 || "0");
+    } else {
+      operando2 = operando2.slice(0, -1);
+      actualizarPantalla(operando2 || "0");
+    }
+    actualizarInfo();
+    calcularEnTiempoReal(); // 👈 actualizar tras borrar
+  }
+
+  // AC (reset total)
+  if (btn.dataset.accion === "neg") {
+    operando1 = "";
+    operando2 = "";
+    operacion = "";
+    escribiendoSegundo = false;
+    resultadoMostrado = false;
+    actualizarPantalla("0");
+    actualizarInfo();
+  }
+});
+</script>
+</body>
+</html>
+
+

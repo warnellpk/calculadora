@@ -8,6 +8,151 @@
     --font-family: 'Arial';
     --font-size-base: 16px;
     --border-radius: 16px;
+        --border-color : #000000;
+          --background-container: #dfdfdf;
+
+}
+
+@media (prefers-color-scheme: dark) {
+
+:root {
+
+
+    --color-background: #000000;
+    --color-secondary: #1a1a1a;
+    --color-secondary-hover: #333333;
+    --color-text: #ffffff;
+    --font-family: 'Arial';
+    --font-size-base: 16px;
+    --border-color : #5a5a5a;
+    --background-container: #313131;
+
+
+}
+
+}
+
+
+body {
+    background-color: var(--color-background);
+    color: var(--color-text);
+    font-family: var(--font-family);
+    font-size: var(--font-size-base);
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center; 
+    align-items: center;    
+    height: 100vh;          
+
+}
+
+.calculator-container {
+    width: 426px;
+    margin: 0 auto; 
+    padding: 20px;
+    border-radius: var(--border-radius);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+     border: 2px solid var(--border-color);
+    background-color: var(--background-container);  
+
+}
+
+.fila {
+    display: flex;
+    justify-content: center;
+}
+
+.fila button {
+    background-color: var(--color-secondary);
+    border-radius: var(--border-radius);
+    color: var(--color-text);
+    cursor: pointer;
+    font-size: 1.2em;
+    margin: 5px;
+    padding: 15px;
+    width: 90px;
+    transform: matrix(1, 0, 0, 1, 0, 0);
+    transition: all 0.1s ease-in-out;
+     border: 2px solid var(--border-color);
+}
+
+
+.fila button:hover {
+    background-color: var(--color-secondary-hover);
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    transform: matrix(1.02, 0, 0, 1.02, 0, -2);
+    transition: all 0.1s ease-in-out;
+}
+
+.fila button:active {
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+    transform: matrix(0.98, 0, 0, 0.98, 0, 2);
+    transition: all 0.1s ease-in-out;
+
+}
+
+#pantalla {
+    background-color: var(--color-secondary);
+    border-radius: var(--border-radius);
+    margin-bottom: 20px;
+    padding: 20px;
+    text-align: right;
+         border: 2px solid var(--border-color);
+
+}
+#resultado {
+    font-size: 2em;
+    font-weight: bold;
+
+}
+
+
+
+/* ===================== */
+/*     RESPONSIVE        */
+/* ===================== */
+
+@media (max-width: 600px) {
+    .calculator-container {
+        width: 90%;         /* Ocupar casi toda la pantalla */
+        padding: 15px;
+    }
+
+    .fila button {
+        width: 100%;        /* Cada botón ocupa todo el ancho */
+        margin: 5px 0;      /* Separación vertical */
+        font-size: 1em;     /* Reduce fuente un poco */
+        padding: 12px;
+    }
+
+    #pantalla {
+        padding: 15px;
+        font-size: 1.5em;   /* Reduce tamaño en móvil */
+    }
+}
+
+/* Opcional: si quieres que los botones se acomoden en columnas flexibles */
+@media (max-width: 400px) {
+    .fila {
+        flex-wrap: wrap;    /* Permite que los botones se bajen a otra línea */
+    }
+
+    .fila button {
+        flex: 1 1 45%;      /* 2 botones por fila */
+    }
+}
+
+:root 
+{
+
+    --color-background: #f0f0f0;
+    --color-secondary: #ffffff;
+    --color-secondary-hover: #e0e0e0;
+    --color-text: #000000;
+    --font-family: 'Arial';
+    --font-size-base: 16px;
+    --border-radius: 16px;
     --border-color : #000000;
     --background-container: #dfdfdf;
 
